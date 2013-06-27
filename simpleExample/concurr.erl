@@ -14,7 +14,7 @@ start() ->
 
 ping(0, Pong_pid) ->
   Pong_pid ! finished,
-  io:format("ping finished~n, []");
+  io:format("ping finished~n", []);
 ping(N, Pong_pid) ->
   Pong_pid ! {ping, self()},
   receive
