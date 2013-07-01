@@ -1,8 +1,10 @@
--module(gen_test).
+-module(udp_test).
 -export([server/1]).
 -export([client/1]).
 -export([client/3]).
 -export([startclient/0]).
+-export([start_server/0]).
+-export([print_time/1]).
 % First Erlang UDP server/client
 % Add concurrent processing.
 % Define the interface to create server side.
@@ -38,7 +40,7 @@ client(Host, Port, Request) ->
      Id = 1,
      loopclient(Socket, Host, Port, Request, Id + 1).   
 % Define that the client will send message for 400 times then quit.
-loopclient(Socket, Host, Port, Request1, Id) when Id < 400 ->
+loopclient(Socket, Host, Port, Request1, Id) when Id < 1000000 ->
     ok = gen_udp:send(Socket,Host,Port,Request1),
      loopclient(Socket,Host, Port, Request1, Id + 1);
 loopclient(Socket, Host, Port, Request1, Id) ->
@@ -62,3 +64,16 @@ startclient() ->
      spawn(udp_test, client, ["127.0.0.1", 53530, "Hello World from Erlang Client 12"]),
      spawn(udp_test, client, ["127.0.0.1", 53530, "Hello World from Erlang Client 13"]),
      spawn(udp_test, client, ["127.0.0.1", 53530, "Hello World from Erlang Client 14"]).
+
+
+start_server() ->
+  spawn(udp_test, server, [53530]),
+  spawn(udp_test, print_time, [1]).
+
+print_time(N) ->
+  erlang:send_after(1000, self(), "1 sencond"),
+  receive
+    "1 sencond" ->
+      io:format("~w seconds passed!~n", [N])
+  end,
+  print_time(N + 1).
