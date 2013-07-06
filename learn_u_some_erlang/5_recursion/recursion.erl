@@ -4,6 +4,8 @@
 -export([reverse/1]).
 -export([sublist/2]).
 -export([tail_sublist/2]).
+-export([zip/2]).
+-export([tail_zip/2]).
 
 -spec(count(tuple()) -> number()).
 count(A) ->
@@ -56,3 +58,21 @@ tail_sublist(L, 0, Result) ->
   Result;
 tail_sublist([H|R], N, Result) ->
   tail_sublist(R, N - 1, [H|Result]).
+
+
+-spec(zip(list(), list()) -> list()).
+
+zip([], []) ->
+  [];
+zip([X|Y], [Z|W]) ->
+  [{X, Z} | zip(Y, W)].
+
+tail_zip(List1, List2) ->
+  lists:reverse(tail_zip(List1, List2, [])).
+
+tail_zip([], _, Result) ->
+  Result;
+tail_zip(_, [], Result) ->
+  Result;
+tail_zip([H1|Tail1], [H2|Tail2], Result) ->
+  tail_zip(Tail1, Tail2, [{H1, H2}| Result]).
