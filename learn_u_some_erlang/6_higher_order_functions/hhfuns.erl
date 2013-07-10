@@ -25,3 +25,25 @@ map(F, [H|T]) ->
 incr(X) -> X + 1.
 
 decr(X) -> X - 1.
+
+a() ->
+  Secret = "pony",
+  fun()-> Secret end.
+
+filter(Pred, L) ->
+  lists:reverse(filter(Pred, L, [])).
+
+filter(_, [], Acc) ->
+  Acc;
+filter(Pred, [H|T], Acc) ->
+  case Pred(H) of
+  	true ->
+  		filter(Pred, T, [H|Acc]);
+  	false ->
+  	    filter(Pred, T, Acc)
+  end.
+
+fold(F, Start, []) ->
+  Start;
+fold(F, Start, [H|T]) ->
+  fold(F, F(Start, H), T).
